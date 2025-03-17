@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Students";
+}
+
+<h1>Students</h1>
+
+<div id="root" class="container"></div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let root = document.getElementById('root');
+
+            fetch("Student/GetAllStudents", {
+                method: 'GET'
+            })
+            .then(response => {
+                if(response.ok) {
+                    return response.text();
+                }
+            })
+            .then(response => {
+                root.innerHTML = response;
+            })
+        })
+    </script>
+}
