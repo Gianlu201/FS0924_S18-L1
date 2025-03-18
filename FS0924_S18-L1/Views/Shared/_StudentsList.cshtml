@@ -21,7 +21,8 @@
                     <td>@student.BirthdayDate.ToString("dd-MM-yyyy")</td>
                     <td>@student.Email</td>
                     <td>
-                        <button onclick="showModalDetails('@student.Id')">Details</button>
+                        <button class="btn btn-sm btn-warning" onclick="showEditModal('@student.Id')">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="showEditModal('@student.Id')">Delete</button>
                     </td>
                 </tr>
             }
