@@ -8,10 +8,12 @@ namespace FS0924_S18_L1.Services
     public class StudentService
     {
         private readonly ApplicationDbContext _context;
+        private readonly LoggerService _loggerService;
 
-        public StudentService(ApplicationDbContext context)
+        public StudentService(ApplicationDbContext context, LoggerService loggerService)
         {
             _context = context;
+            _loggerService = loggerService;
         }
 
         private async Task<bool> TrySaveAsync()
@@ -20,8 +22,9 @@ namespace FS0924_S18_L1.Services
             {
                 return await _context.SaveChangesAsync() > 0;
             }
-            catch
+            catch (Exception ex)
             {
+                _loggerService.LogError(ex.Message);
                 return false;
             }
         }
@@ -34,10 +37,12 @@ namespace FS0924_S18_L1.Services
 
                 studentsList.Students = await _context.Students.ToListAsync();
 
+                _loggerService.LogInformation("Students list requested by admin");
                 return studentsList;
             }
-            catch
+            catch (Exception ex)
             {
+                _loggerService.LogError(ex.Message);
                 return new StudentsListViewModel() { Students = new List<Student>() };
             }
         }
@@ -62,10 +67,12 @@ namespace FS0924_S18_L1.Services
                     Email = student.Email,
                 };
 
+                _loggerService.LogInformation("Single student requested by admin");
                 return foundStudent;
             }
-            catch
+            catch (Exception ex)
             {
+                _loggerService.LogError(ex.Message);
                 return new Student();
             }
         }
@@ -85,10 +92,12 @@ namespace FS0924_S18_L1.Services
 
                 var result = _context.Add(student);
 
+                _loggerService.LogInformation("Student added in database by admin");
                 return await TrySaveAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _loggerService.LogError(ex.Message);
                 return false;
             }
         }
@@ -109,10 +118,12 @@ namespace FS0924_S18_L1.Services
                 result.BirthdayDate = editStudentViewModel.BirthdayDate;
                 result.Email = editStudentViewModel.Email;
 
+                _loggerService.LogInformation("Student updated by admin");
                 return await TrySaveAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _loggerService.LogError(ex.Message);
                 return false;
             }
         }
@@ -130,10 +141,12 @@ namespace FS0924_S18_L1.Services
 
                 _context.Students.Remove(student);
 
+                _loggerService.LogWarning("Student deleted by admin");
                 return await TrySaveAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _loggerService.LogError(ex.Message);
                 return false;
             }
         }
