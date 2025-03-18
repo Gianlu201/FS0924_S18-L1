@@ -40,6 +40,8 @@
     </div>
 </div>
 
+<div id="modalContainer"></div>
+
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -151,6 +153,56 @@
             }
         }
 
+        function showDeleteModal(id) {
+            fetch(`student/delete`, {
+                method: 'POST'
+            })
+            .then(response => {
+                if(response.ok)
+                {
+                    return response.text()
+                }
+            })
+            .then(response => {
+                let modalContainer = document.getElementById('modalContainer');
+
+                modalContainer.innerHTML = response;
+
+                let deleteModal = document.getElementById('deleteModal');
+
+                if(deleteModal) {
+                    let modalDeleteInstance = new bootstrap.Modal(deleteModal);
+
+                    modalDeleteInstance.show();
+
+                    let deleteBtn = document.getElementById('deleteModalBtn');
+
+                    if(deleteBtn) {
+                        deleteBtn.onclick = () => deleteStudent(id);
+                    }
+                }
+            });
+        }
+
+        async function deleteStudent(id) {
+            const response = await fetch(`student/delete/save/${id}`, {
+                method: 'POST'
+            })
+
+            if (response.ok) {
+                const data = await response.json();
+
+                if (data.success) {
+                    const deleteModalInstance = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                    deleteModalInstance.hide();
+                    
+                    const modalContainer = document.getElementById('modalContainer');
+
+                    modalContainer.innerHTML = '';
+                    loadStudentList();
+                }
+            }
+        }
 
     </script>
 }

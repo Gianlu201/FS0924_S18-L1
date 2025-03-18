@@ -116,5 +116,26 @@ namespace FS0924_S18_L1.Services
                 return false;
             }
         }
+
+        public async Task<bool> DeleteStudentByIdAsync(Guid id)
+        {
+            try
+            {
+                var student = await _context.Students.FindAsync(id);
+
+                if (student == null)
+                {
+                    return false;
+                }
+
+                _context.Students.Remove(student);
+
+                return await TrySaveAsync();
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

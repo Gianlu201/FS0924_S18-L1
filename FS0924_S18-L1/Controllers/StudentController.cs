@@ -97,5 +97,26 @@ namespace FS0924_S18_L1.Controllers
 
             return Json(new { success = result, message = ResultMessage });
         }
+
+        [HttpPost("student/delete")]
+        public IActionResult ShowDeleteModal()
+        {
+            return PartialView("_DeleteStudentModal");
+        }
+
+        [HttpPost("student/delete/save/{id:guid}")]
+        public async Task<IActionResult> DeleteStudent(Guid id)
+        {
+            var result = await _studentService.DeleteStudentByIdAsync(id);
+
+            var resultMessage = "Entity deleted successfully";
+
+            if (!result)
+            {
+                resultMessage = "Error while deleting entity from database";
+            }
+
+            return Json(new { success = result, message = resultMessage });
+        }
     }
 }
